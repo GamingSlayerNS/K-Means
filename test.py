@@ -29,6 +29,7 @@ with open(filePath, 'r', encoding='utf-8') as file:
 
         return tweet.strip()
 
+
 # Function to calculate Jaccard distance
 def jaccard_distance(set1, set2):
     intersection = len(set1.intersection(set2))
@@ -38,28 +39,24 @@ def jaccard_distance(set1, set2):
 
 # Function to assign tweets to the nearest centroids
 def assign_tweets_to_centroids(tweets, centroids):
-    clusters = {}
-    for i in range(len(centroids)):
-        clusters[i] = []
-
-    for tweet in tweets:
+    clusters = {i: [] for i in range(len(centroids))}
+    for index, tweet in enumerate(tweets):
         distances = [jaccard_distance(tweet, centroid) for centroid in centroids]
         cluster_index = distances.index(min(distances))
-        clusters[cluster_index].append(tweet)
-
+        clusters[cluster_index].append(index)  # Storing index instead of tweet content
     return clusters
 
 
 # Function to update centroids
-def update_centroids(clusters):
+def update_centroids(clusters, tweets):
     new_centroids = []
     for cluster in clusters.values():
-        # Combine all sets in the cluster and find the average set
-        cluster_union = set().union(*cluster)
-        # The new centroid is the set that has the smallest average Jaccard distance to all sets in the cluster
-        new_centroid = min(cluster,
-                           key=lambda tweet: sum(jaccard_distance(tweet, other) for other in cluster) / len(cluster))
-        new_centroids.append(new_centroid)
+        # Find the centroid as the tweet with the smallest average Jaccard distance to others in the cluster
+        if cluster:  # Checking if the cluster is not empty
+            new_centroid = min(cluster, key=lambda idx: sum(jaccard_distance(tweets[idx], tweets[other_idx]) for other_idx in cluster) / len(cluster))
+            new_centroids.append(tweets[new_centroid])
+        else:
+            new_centroids.append(set())  # Just in case there's an empty cluster
     return new_centroids
 
 
@@ -73,24 +70,44 @@ def k_means(tweets, k, max_iterations=100):
 
     for iteration in range(max_iterations):
         clusters = assign_tweets_to_centroids(tweets, centroids)
-        new_centroids = update_centroids(clusters)
+        new_centroids = update_centroids(clusters, tweets)
 
         # If centroids don't change, break out of the loop
         if set(map(tuple, new_centroids)) == set(map(tuple, centroids)):
             break
         centroids = new_centroids
 
-    return clusters
+    return clusters, centroids
+
+
+# Calculate Sum of Square Errors
+def calculate_sse(clusters, tweets, centroids):
+    sse_per_cluster = {}
+    total_sse = 0  # Initialize total SSE to zero
+
+    for cluster_index, tweet_indices in clusters.items():
+        centroid = centroids[cluster_index]
+        # Calculate the SSE for the cluster
+        cluster_sse = sum(jaccard_distance(tweets[idx], centroid)**2 for idx in tweet_indices)
+        sse_per_cluster[cluster_index] = cluster_sse
+        total_sse += cluster_sse  # Add the cluster's SSE to the total SSE
+
+    return sse_per_cluster, total_sse
 
 
 # Example usage
-raw_tweets = [preprocessTweet(tweet) for tweet in raw_tweets[:10]]
-print("raw tweets:\n", raw_tweets)
-tweets = [set(tweet.split()) for tweet in raw_tweets]  # raw_tweets is your list of tweets
-print("preprocessed tweets:\n", tweets)
+preprocessed_tweets = [preprocessTweet(tweet) for tweet in raw_tweets[:50]]
+print("preprocessed tweets:\n", preprocessed_tweets)
+tweet_sets = [set(tweet.split()) for tweet in preprocessed_tweets]  # raw_tweets is your list of tweets
+print("tweet sets:\n", tweet_sets)
 print("Running Kmeans")
-clusters = k_means(tweets, 5)
+clusters, centroids = k_means(tweet_sets, 10)
 
 # Display the results
-for cluster_index, tweet_sets in clusters.items():
-    print(f"Cluster {cluster_index}: {[' '.join(tweet_set) for tweet_set in tweet_sets]}")
+for cluster_index, tweet_indices in clusters.items():
+    print(f"Cluster {cluster_index}: {[preprocessed_tweets[idx] for idx in tweet_indices]}")
+
+sse_per_cluster, total_sse = calculate_sse(clusters, tweet_sets, centroids)
+for cluster_index, sse in sse_per_cluster.items():
+    print(f"SSE for Cluster {cluster_index}: {sse}")
+print(f"Total Sum of Square Error: {total_sse}")
