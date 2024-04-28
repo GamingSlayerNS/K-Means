@@ -11,7 +11,7 @@ with open(filePath, 'r', encoding='utf-8') as file:
 
 
 class KMeans:
-    def __init__(self, k, data_range, max_iterations):
+    def __init__(self, k, data_range=None, max_iterations=100):
         self.k = k
         self.data_range = data_range
         self.max_iterations = max_iterations
@@ -22,7 +22,8 @@ class KMeans:
 
     def preprocessTweet(self, raw_data):
         tweets = []
-        for tweet in raw_data[:100]:
+        end_range = self.data_range if self.data_range is not None else len(raw_data)
+        for tweet in raw_data[:end_range]:
             # Remove the tweet id and timestamp
             tweet = tweet.split('|', 2)[-1]
 
@@ -122,7 +123,7 @@ class KMeans:
 
 # Press the green button in the gutter to run 
 if __name__ == '__main__':
-    kmeans = KMeans(k=10, data_range=100, max_iterations=100)
+    kmeans = KMeans(k=10, data_range=200, max_iterations=100)
 
     kmeans.preprocessTweet(raw_tweets)
     print("preprocessed tweets:\n", kmeans.preprocessed_tweets)

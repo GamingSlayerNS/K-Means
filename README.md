@@ -1,59 +1,35 @@
-# Simple Neural Network Implementation
+# Twitter K-Means Clustering Algorithm
 
-This project demonstrates a simple neural network implementation using Python. The network is tested on a modified Iris dataset, reduced to a binary classification task.
+This project implements a K-Means clustering algorithm from scratch to analyze and cluster Twitter tweets. It aims to find patterns and group similar tweets using the Jaccard distance as the similarity metric. The project is designed to run with tweets from the UCI Twitter dataset, focusing on exploring thematic consistencies or variations across tweets.
+
+## Project Structure
+
+- `main.py`: Contains the main K-Means clustering algorithm and data preprocessing methods.
+- `Health-Tweets/`: Directory containing the dataset file.
+- `README.md`: This file, providing an overview and instructions for the project.
 
 ## Prerequisites
 
-Ensure you have Python installed on your system. The project requires the following Python libraries:
+Before running this project, you need to have Python installed on your machine (Python 3.10 recommended). Additionally, the following Python packages are required:
 
-- numpy
-- pandas
-- sklearn
+- `random`
+- `re` (part of the standard library)
 
-You can install these packages using pip:
+You can install the necessary packages using pip:
 
-## How to Run
-
-1. Clone the repository or download the source code.
-2. Navigate to the directory containing `main.py`.
-3. Run the script using Python:
-
-## Configuration
-
-The neural network is configurable through the `NeuralNetwork` class instantiation in `main.py`. You can set the following parameters:
-
-- `numInNodes`: Number of input nodes.
-- `numHiddenNodes1`: Number of nodes in the first hidden layer.
-- `numHiddenNodes2`: Number of nodes in the second hidden layer.
-- `numOutNodes`: Number of output nodes.
-- `activationFunction`: Activation function to use ('sigmoid', 'tanh', 'relu').
-- `learningRate`: Learning rate for the network.
-- `momentum`: Momentum for the network.
-- `epochs`: Number of epochs to train the network.
-
-Example of instantiation:
-
-```python
-neuralNetwork = NeuralNetwork(numInNodes=4, numHiddenNodes1=8, numHiddenNodes2=4, numOutNodes=1,
-                              activationFunction='sigmoid', learningRate=0.1, momentum=0.75, epochs=100)
+```bash
+pip install numpy pandas
 ```
 
-## Output
-Example:
-epoch: 100/100   Training Loss: 0.000372
+## Dataset
+The dataset used is the UCI Twitter dataset, which can be found at the UCI Machine Learning Repository. The data needs to be downloaded and placed in the data/ directory.
 
-Output Predicted: 
-[[0.023921 0.021605 0.02035  0.019566 0.019707 0.98109  0.979645 0.975596
-  0.95495  0.028741 0.983673 0.018342 0.023996 0.031839 0.024817 0.021511
-  0.017634 0.980899 0.021912 0.979857]]
+## Usage
 
-Actual: 
-[[0 0 0 0 0 1 1 1 1 0 1 0 0 0 0 0 0 1 0 1]]
-
-Model Accuracy: 
-Accuracy = 100.00%
+1. Configuration: You can modify the parameters in the KMeans.py script to fit the number of clusters (k), the range of data to process (data_range), and the maximum iterations (max_iterations).
+2. Running the script: Execute the script from your command line by navigating to the project directory and running:
 
 ## Authors
 
-Naxel Santiago
-Danny Bao
+- Naxel Santiago
+- Danny Bao
