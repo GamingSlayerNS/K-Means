@@ -107,6 +107,8 @@ print(f"Centroids: {centroids}")
 # Display the results
 for cluster_index, tweet_indices in clusters.items():
     print(f"Cluster {cluster_index+1}: {[preprocessed_tweets[idx] for idx in tweet_indices]}")
+
+for cluster_index, tweet_indices in clusters.items():
     print(f"Size of cluster {cluster_index+1}: {len(tweet_indices)}")
 
 sse_per_cluster, total_sse = calculate_sse(clusters, tweet_sets, centroids)
