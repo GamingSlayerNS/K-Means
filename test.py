@@ -96,17 +96,17 @@ def calculate_sse(clusters, tweets, centroids):
 
 
 # Example usage
-preprocessed_tweets = [preprocessTweet(tweet) for tweet in raw_tweets[:6402]]
+preprocessed_tweets = [preprocessTweet(tweet) for tweet in raw_tweets[:100]]
 print("preprocessed tweets:\n", preprocessed_tweets)
 tweet_sets = [set(tweet.split()) for tweet in preprocessed_tweets]  # raw_tweets is your list of tweets
 print("tweet sets:\n", tweet_sets)
 print("Running Kmeans")
-clusters, centroids = k_means(tweet_sets, 50)
+clusters, centroids = k_means(tweet_sets, 10)
 print(f"Centroids: {centroids}")
 
 # Display the results
 for cluster_index, tweet_indices in clusters.items():
-    print(f"Cluster {cluster_index+1}: {[preprocessed_tweets[idx] for idx in tweet_indices]}")
+    print(f"Cluster {cluster_index+1}: {[preprocessed_tweets[idx] for idx in tweet_indices]}\n")
 
 for cluster_index, tweet_indices in clusters.items():
     print(f"Size of cluster {cluster_index+1}: {len(tweet_indices)}")
